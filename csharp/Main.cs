@@ -1,4 +1,4 @@
-namespace Model
+namespace Main
 {
     class ConstantOutputProgram
     {
