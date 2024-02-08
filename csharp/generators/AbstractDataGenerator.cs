@@ -2,22 +2,24 @@ namespace DataGeneration
 {
     public abstract class AbstractDataGenerator<T>
     {
-        private int hz;
+        private double update_time;
         private readonly int seed;
         protected readonly Random rand;
 
-        public event EventHandler<EventArgs<T>> NumberGenerated;
+        private DateTime _last_frame = DateTime.Now;
+
+        public event EventHandler<EventArgs<T>> DataGenerated;
         
-        public AbstractDataGenerator(int hz)
+        public AbstractDataGenerator(double hz)
         {
-            this.hz = hz;
+            this.update_time = 1.0 / hz;
             this.seed = new Random().Next();
             this.rand = new Random(this.seed);
         }
 
-        public AbstractDataGenerator(int hz, int seed)
+        public AbstractDataGenerator(double hz, int seed)
         {
-            this.hz = hz;
+            this.update_time = 1.0 / hz;
             this.seed = seed;
             this.rand = new Random(seed);
         }
@@ -26,14 +28,20 @@ namespace DataGeneration
 
         public void StartGenerator()
         {
-            T data = GenerateNewData();
-            OnNumberGenerated(new EventArgs<T>(data));
-            return;
+            while (true) {
+                DateTime current_time = DateTime.Now;
+                if ((current_time - _last_frame).TotalSeconds >= update_time)
+                {
+                    T data = GenerateNewData();
+                    OnDataGenerated(new EventArgs<T>(data));
+                    _last_frame = current_time;
+                }
+            }
         }
 
-        public virtual void OnNumberGenerated(EventArgs<T> e)
+        public virtual void OnDataGenerated(EventArgs<T> e)
         {
-            NumberGenerated?.Invoke(this, e);
+            DataGenerated?.Invoke(this, e);
         }
     }
 

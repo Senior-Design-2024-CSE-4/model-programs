@@ -2,11 +2,16 @@ using DataGeneration;
 
 namespace Main
 {
-    class ConstantOutputProgram
+    public class ConstantOutputProgram
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello world!");
+            IntGenerator generator = new IntGenerator(120);
+            DataListener<int> listener = new DataListener<int>();
+
+            listener.AddGenerator(generator);
+
+            generator.StartGenerator();
         }
     }
 }
