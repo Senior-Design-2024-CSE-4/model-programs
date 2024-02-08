@@ -1,3 +1,5 @@
+using DataGeneration;
+
 namespace Main
 {
     class ConstantOutputProgram
